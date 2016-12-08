@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bzzd
+spec:  # specification of the pod's contents
+  restartPolicy: Never
+  containers:
+  - name: bzzd-container
+    image: "bzzd"
+    env:
+    - name: "ETHAPI"
+      value: "/geth.ipc"
+    - name: "BZZ_PORT"
+      value: "30399"
+    - name: "BZZ_HTTP_PORT"
+      value: "8080"
+    - name: "DATADIR"
+      value: "/bzzd-data"
+    imagePullPolicy: Never
+    volumeMounts: 
+    - name: "secrets-vol"
+      mountPath: "/root/secrets"
+      readOnly: true
+
+  volumes:
+  - name: "secrets-vol"
+    secret: 
+      secretName: "secrets"  
+      items:
+      - key: "startup"
+        path: "bzzdstartup/script"
+      - key: "key-filename"
+        path: "keyimport/filename"
+      - key: "key-data"
+        path: "keyimport/thekey"
+      - key: "password"
+        path: "default_pwd"
+
+      
